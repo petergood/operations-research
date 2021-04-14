@@ -8,6 +8,7 @@ alfa = 0.5
 beta = 0.5
 heuristic_coefficient = 1
 
+
 def d(location_a, location_b):
     return math.dist(location_a, location_b)
 
@@ -34,7 +35,7 @@ def p(point_a, point_b, tau, all_points, visited_points):
     nominator = (t**alfa) * (n**beta)
 
     allowed_points = list(filter(lambda point: point_filter(point, visited_points),
-                            all_points))
+                                 all_points))
     iks = map(lambda point: tuple(sorted([point_a, point])), allowed_points)
     values_to_sum = list(map(lambda ik: (
         tau[ik]**alfa)*(d(ik[0], ik[1])**(-1)*heuristic_coefficient)**beta, iks))
@@ -64,7 +65,8 @@ def ant_iteration(starting_point, all_points, pheromone_map):
     current_position = starting_point
     while set(visited) != set(all_points):
         prev_position = current_position
-        current_position = choose_next_point(current_position, all_points, visited, pheromone_map)
+        current_position = choose_next_point(
+            current_position, all_points, visited, pheromone_map)
         visited.append(current_position)
         trace.append(tuple([prev_position, current_position]))
         trace_length += d(current_position, prev_position)
@@ -76,16 +78,20 @@ def ant_iteration(starting_point, all_points, pheromone_map):
     return local_pheromone_map, trace, trace_length
 
 
-def aso_tsp(orders, iterations):  
+def aso_tsp(orders, iterations):
+    orders_map = dict()
+    for _, _, pickup_point, drop_point in orders:
+        orders_map[drop_point] = pickup_point
     best_trace = []
     min_length = -1
-    all_points = list(orders.keys()) + list(orders.values())
-    starting_points = list(orders.values())
+    all_points = list(orders_map.keys()) + list(orders_map.values())
+    starting_points = list(orders_map.values())
     pheromone_map = defaultdict(int)
     for i in range(iterations):
         pheromone_map_acc = pheromone_map.copy()
         for point in starting_points:
-            update_for_pheromone_map, trace, trace_length = ant_iteration(point, all_points, pheromone_map)
+            update_for_pheromone_map, trace, trace_length = ant_iteration(
+                point, all_points, pheromone_map)
             add_pheromone_map(pheromone_map_acc, update_for_pheromone_map)
             if min_length == -1:
                 min_length = trace_length
@@ -96,8 +102,8 @@ def aso_tsp(orders, iterations):
 
     return best_trace
 
-orders = {(1, 2): (3, 4), (2, 1): (4, 3), (9, 8): (7, 6)}
 
-print(aso_tsp(orders))
+orders = [(1, 1,(random.uniform(-1000, 1000), random.uniform(-1000, 1000)),
+           (random.uniform(-1000, 1000), random.uniform(-1000, 1000))) for _ in range(5)]
 
-
+print(aso_tsp(orders, 10))
