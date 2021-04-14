@@ -5,7 +5,11 @@ from functools import reduce
 from numpy.random import choice
 
 def aco_knapsack(objects, max_volume, cycle_count, ant_count, evaporation, trail_weight, attractiveness_weight):
-  objects = list(filter(lambda obj: obj[0] <= max_volume, objects))
+  objects_filtered = list(filter(lambda obj: obj[0] <= max_volume, objects))
+  if len(objects_filtered) == 0:
+    return 0, 0, []
+
+  objects = list(map(lambda obj: (obj[0], obj[1]), objects_filtered))
   n = len(objects)
   trail = [1] * len(objects)
 
@@ -55,15 +59,15 @@ def aco_knapsack(objects, max_volume, cycle_count, ant_count, evaporation, trail
       for j in ant_solution:
         trail[j] += delta
 
-  return max_profit, solution_volume, solution
+  return max_profit, solution_volume, list(map(lambda i: objects_filtered[i], solution))
 
 if __name__ == "__main__":
   min_val = 1
   max_val = 100
-  val_count = 100
+  val_count = 5
 
   volume = random.uniform(min_val, max_val)
-  objects = [(random.uniform(min_val, max_val), random.uniform(min_val, max_val)) for _ in range(val_count)]
+  objects = [(random.uniform(min_val, volume), random.uniform(min_val, volume), 0, 0) for _ in range(val_count)]
 
   print(f"Volume: {volume}")
 
