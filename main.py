@@ -13,9 +13,11 @@ if __name__ == "__main__":
 
   tsp_iterations = 10
   tsp_Q = 1
+  tsp_evaporation = 0.1
   tsp_alpha = 0.5
   tsp_beta = 0.5
   tsp_heuristic_coefficient = 1
+
 
   # Example set of objects
   min_val = 1
@@ -44,7 +46,8 @@ if __name__ == "__main__":
     Q=tsp_Q, 
     alfa=tsp_alpha, 
     beta=tsp_beta, 
-    heuristic_coefficient=tsp_heuristic_coefficient)
+    heuristic_coefficient=tsp_heuristic_coefficient,
+    evaporation=tsp_evaporation)
 
   print(f"Profit: {profit}")
   print(f"Trace: {trace}")

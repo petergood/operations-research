@@ -44,6 +44,9 @@ def add_pheromone_map(map_1, map_2):
     for key in map_2:
         map_1[key] += map_2[key]
 
+def evaporate(pheromone_map, evaporation):
+    for key in pheromone_map:
+        pheromone_map[key] *= evaporation
 
 def choose_next_point(orders, current_position, all_points, visited, pheromone_map, alfa, beta, heuristic_coefficient):
     distribution = map(lambda point: p(
@@ -72,7 +75,7 @@ def ant_iteration(orders, starting_point, all_points, pheromone_map, Q, alfa, be
     return local_pheromone_map, trace, trace_length
 
 
-def aso_tsp(orders, iterations, Q, alfa, beta, heuristic_coefficient):
+def aso_tsp(orders, iterations, Q, alfa, beta, heuristic_coefficient, evaporation):
     orders_map = dict()
     for _, _, pickup_point, drop_point in orders:
         orders_map[drop_point] = pickup_point
@@ -93,6 +96,7 @@ def aso_tsp(orders, iterations, Q, alfa, beta, heuristic_coefficient):
                 min_length = trace_length
                 best_trace = trace
         add_pheromone_map(pheromone_map, pheromone_map_acc)
+        evaporate(pheromone_map, evaporation)
 
     return best_trace
 
