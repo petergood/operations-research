@@ -1,5 +1,6 @@
 import math
 import random
+from visualization import draw_trace
 from collections import defaultdict
 
 
@@ -104,5 +105,6 @@ def aso_tsp(orders, iterations, Q, alfa, beta, heuristic_coefficient, evaporatio
 if __name__ == "__main__":
     orders = [(1, 1,(random.uniform(-1000, 1000), random.uniform(-1000, 1000)),
             (random.uniform(-1000, 1000), random.uniform(-1000, 1000))) for _ in range(5)]
+    trace = aso_tsp(orders, 10, 1, 0.5, 0.5, 1, 0.1)
+    draw_trace(orders, trace)
 
-    print(aso_tsp(orders, 10, 1, 0.5, 0.5, 1))
