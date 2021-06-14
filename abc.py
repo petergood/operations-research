@@ -194,7 +194,6 @@ def abc_tsp(orders, population, onlooker_percent, employed_percent, scout_percen
             best_dist = searched_dist
             best_path = searched_path
 
-    print(best_dist, end=",")
     return best_path
 
 
@@ -216,7 +215,5 @@ if __name__ == "__main__":
     for i in range(1, len(best_path)):
         trace.append((best_path[i-1], best_path[i]))
 
-    draw_trace(orders, trace)
-    trace = aso_tsp(orders, 10, 1, 0.5, 0.5, 1, 0.1)
     draw_trace(orders, trace)
 

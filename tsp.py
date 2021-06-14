@@ -99,7 +99,6 @@ def aso_tsp(orders, iterations, Q, alfa, beta, heuristic_coefficient, evaporatio
         add_pheromone_map(pheromone_map, pheromone_map_acc)
         evaporate(pheromone_map, evaporation)
 
-    print(min_length)
     return best_trace
 
 
