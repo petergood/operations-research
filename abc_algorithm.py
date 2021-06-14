@@ -1,11 +1,5 @@
 import math
 import random
-
-from matplotlib.pyplot import disconnect
-from visualization import draw_trace
-from tsp import aso_tsp
-
-
 class Bee:
     def __init__(self, path, distance):
         self.role = None
@@ -193,8 +187,12 @@ def abc_tsp(orders, population, onlooker_percent, employed_percent, scout_percen
         if searched_dist < best_dist:
             best_dist = searched_dist
             best_path = searched_path
+    
+    trace = []
+    for i in range(1, len(best_path)):
+        trace.append((best_path[i-1], best_path[i]))
 
-    return best_path
+    return trace
 
 
 if __name__ == "__main__":
@@ -211,9 +209,4 @@ if __name__ == "__main__":
     best_path = abc_tsp(orders, population, onlooker_percent,
                         employed_percent, scout_percent, cycle_limit, waggle_limit)
 
-    trace = []
-    for i in range(1, len(best_path)):
-        trace.append((best_path[i-1], best_path[i]))
-
-    draw_trace(orders, trace)
-
+    

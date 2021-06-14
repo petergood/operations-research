@@ -3,6 +3,9 @@
 import random
 from knapsack import aco_knapsack
 from tsp import aso_tsp
+from abc_algorithm import abc_tsp
+from visualization import draw_trace
+import sys
 
 if __name__ == "__main__":
   knapsack_iterations = 100
@@ -40,14 +43,29 @@ if __name__ == "__main__":
     attractiveness_weight=knapsack_beta
   )
 
-  trace = aso_tsp(
-    orders=selected_objects, 
-    iterations=tsp_iterations, 
-    Q=tsp_Q, 
-    alfa=tsp_alpha, 
-    beta=tsp_beta, 
-    heuristic_coefficient=tsp_heuristic_coefficient,
-    evaporation=tsp_evaporation)
+  trace = None
+  if len(sys.argv) == 1 or sys.argv[1] == 'ASO':
+    trace = aso_tsp(
+      orders=selected_objects, 
+      iterations=tsp_iterations, 
+      Q=tsp_Q, 
+      alfa=tsp_alpha, 
+      beta=tsp_beta, 
+      heuristic_coefficient=tsp_heuristic_coefficient,
+      evaporation=tsp_evaporation)
+  else:
+    population = 100
+    onlooker_percent = 0.5
+    employed_percent = 0.5
+    scout_percent = 0.2
+    cycle_limit = 10
+    waggle_limit = 5
+    trace = abc_tsp(selected_objects, population, onlooker_percent, employed_percent, scout_percent, cycle_limit, waggle_limit)
+
+  
 
   print(f"Profit: {profit}")
   print(f"Trace: {trace}")
+
+  draw_trace(selected_objects, trace)
+

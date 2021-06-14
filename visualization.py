@@ -35,4 +35,4 @@ def draw_charts(input_file):
     plt.show()
     print(df)
 
-draw_charts('result.csv') 
+# draw_charts('result.csv') 
