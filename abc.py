@@ -1,6 +1,9 @@
 import math
 import random
+
+from matplotlib.pyplot import disconnect
 from visualization import draw_trace
+from tsp import aso_tsp
 
 
 class Bee:
@@ -43,11 +46,27 @@ def get_path_distance(path):
     return dist
 
 
+def get_weights(i, path, orders_map):
+    if orders_map.get(path[i+1], None) == path[i]:
+        return 0
+    path[i], path[i + 1] = path[i + 1], path[i]
+    return get_path_distance(path)
+
+
+def get_distribution(path, orders_map):
+    weights = list(map(lambda i: get_weights(
+        i, path.copy(), orders_map), range(len(path)-1)))
+    weights_sum = sum(weights)
+    probabilities = list(map(lambda w: w/weights_sum, weights))
+
+    return probabilities
+
+
 def mutate_path(path, orders_map):
-    idx = random.randint(1, len(path)-2)
-    while orders_map.get(path[idx+1], None) == path[idx]:
-        idx = random.randint(1, len(path)-2)
-    path[idx], path[idx + 1] = path[idx + 1], path[idx]
+    probabilities = get_distribution(path, orders_map)
+    i = random.choices(range(len(path) - 1), probabilities)[0]
+
+    path[i], path[i + 1] = path[i + 1], path[i]
 
     return path
 
@@ -101,6 +120,7 @@ def calculate_probability(hive, best_dist):
         total_dist += h.distance
     for h in hive:
         h.probability = h.distance/total_dist
+
 
 def neighborhood_search(hive, best_dist):
     calculate_probability(hive, best_dist)
@@ -174,13 +194,14 @@ def abc_tsp(orders, population, onlooker_percent, employed_percent, scout_percen
             best_dist = searched_dist
             best_path = searched_path
 
-    print(best_dist)
+    print(best_dist, end=",")
     return best_path
 
 
 if __name__ == "__main__":
+    # for i in range(5, 21):
     orders = [(1, 1, (random.uniform(-1000, 1000), random.uniform(-1000, 1000)),
-               (random.uniform(-1000, 1000), random.uniform(-1000, 1000))) for _ in range(5)]
+           (random.uniform(-1000, 1000), random.uniform(-1000, 1000))) for _ in range(10)]
     population = 100
     onlooker_percent = 0.5
     employed_percent = 0.5
@@ -196,3 +217,6 @@ if __name__ == "__main__":
         trace.append((best_path[i-1], best_path[i]))
 
     draw_trace(orders, trace)
+    trace = aso_tsp(orders, 10, 1, 0.5, 0.5, 1, 0.1)
+    draw_trace(orders, trace)
+

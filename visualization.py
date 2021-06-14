@@ -1,5 +1,6 @@
 import networkx as nx
 import matplotlib.pyplot as plt
+import pandas
 
 def draw_trace(selected_orders, trace):
     G = nx.DiGraph()
@@ -25,3 +26,13 @@ def draw_trace(selected_orders, trace):
     nx.draw(G, pos, edge_color='red', node_color=colors, with_labels=True)
     plt.legend()
     plt.show()
+
+def draw_charts(input_file):
+    df = pandas.read_csv(input_file)
+    df.insert(0, 'vertex_count', range(5, len(df)+5))
+    ax = df.plot(x = 'vertex_count', y='ABC')
+    df.plot(ax = ax, x = 'vertex_count', y='ASO')
+    plt.show()
+    print(df)
+
+draw_charts('result.csv') 
