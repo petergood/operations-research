@@ -2,12 +2,15 @@
 
 import random
 from knapsack import aco_knapsack
+from knapsack_bees import abc_knapsack
 from tsp import aso_tsp
 from abc_algorithm import abc_tsp
 from visualization import draw_trace
 import sys
 
 if __name__ == "__main__":
+  is_aso = len(sys.argv) == 1 or sys.argv[1] == 'ASO'
+
   knapsack_iterations = 100
   knapsack_ants = 100
   knapsack_evaporation = 0.1
@@ -33,18 +36,37 @@ if __name__ == "__main__":
 
   print(f"Max volume: {volume}")
 
-  profit, _, selected_objects = aco_knapsack(
-    objects,
-    max_volume=volume,
-    cycle_count=knapsack_iterations,
-    ant_count=knapsack_ants,
-    evaporation=knapsack_evaporation,
-    trail_weight=knapsack_alpha,
-    attractiveness_weight=knapsack_beta
-  )
+  profit = 0
+  selected_objects = []
+
+  if is_aso:
+    profit, _, selected_objects = aco_knapsack(
+      objects,
+      max_volume=volume,
+      cycle_count=knapsack_iterations,
+      ant_count=knapsack_ants,
+      evaporation=knapsack_evaporation,
+      trail_weight=knapsack_alpha,
+      attractiveness_weight=knapsack_beta
+    )
+  else:
+    profit, selected_ind = abc_knapsack(
+      list(map(lambda obj: (obj[0], obj[1]), objects)), 
+      volume, 
+      employed_count=10,
+      onlooker_count=10,
+      iter_max=50,
+      p_min=0.04,
+      p_max=0.12,
+      exp=3
+    )
+
+    for i in range(0, len(selected_ind)):
+      if selected_ind[i]:
+        selected_objects.append(objects[i])
 
   trace = None
-  if len(sys.argv) == 1 or sys.argv[1] == 'ASO':
+  if is_aso:
     trace = aso_tsp(
       orders=selected_objects, 
       iterations=tsp_iterations, 
